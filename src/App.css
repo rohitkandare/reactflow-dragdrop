@@ -1,0 +1,100 @@
+.app {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.workflow-canvas {
+  flex: 1;
+  height: 100vh;
+  background: #f8f9fa;
+  position: relative;
+}
+
+.react-flow__node {
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-width: 200px;
+}
+
+.react-flow__node-start,
+.react-flow__node-end {
+  background: #f3f4f6;
+  border: 2px solid #9ca3af;
+  border-radius: 20px;
+  min-width: 80px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: #374151;
+}
+
+.react-flow__node-agent {
+  background: #eff6ff;
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 250px;
+}
+
+.react-flow__node-master {
+  background: #eff6ff;
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  padding: 12px;
+  min-width: 250px;
+}
+
+.react-flow__handle {
+  width: 8px;
+  height: 8px;
+  background: #3b82f6;
+  border: 2px solid white;
+}
+
+.react-flow__edge-path {
+  stroke: #9ca3af;
+  stroke-width: 2;
+}
+
+.react-flow__edge-arrow {
+  fill: #9ca3af;
+}
+
+.react-flow__background {
+  background-color: #f8f9fa;
+}
+
+.react-flow__controls {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Drop zone indicator */
+.react-flow__pane {
+  position: relative;
+}
+
+.react-flow__pane::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 49%, rgba(59, 130, 246, 0.1) 50%, transparent 51%);
+  background-size: 20px 20px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.react-flow__pane.drag-over::before {
+  opacity: 1;
+}

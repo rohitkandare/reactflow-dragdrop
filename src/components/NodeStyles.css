@@ -1,0 +1,381 @@
+/* Start/End Node Styles */
+.start-end-node {
+  background: #f3f4f6;
+  border: 2px solid #9ca3af;
+  border-radius: 20px;
+  padding: 8px 16px;
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+  text-align: center;
+  min-width: 80px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Agent Node Styles */
+.agent-node {
+  background: #eff6ff;
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  padding: 16px;
+  min-width: 280px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.master-agent-node {
+  background: #eff6ff;
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  padding: 16px;
+  min-width: 280px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.agent-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.agent-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+}
+
+.agent-icon {
+  width: 20px;
+  height: 20px;
+  color: #3b82f6;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.agent-details {
+  flex: 1;
+}
+
+.agent-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.agent-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.agent-status {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.agent-status.configured {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.agent-status.not-configured {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.agent-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.agent-model {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.model-icon {
+  font-size: 12px;
+}
+
+.menu-container {
+  position: relative;
+}
+
+.menu-icon {
+  width: 16px;
+  height: 16px;
+  color: #9ca3af;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.menu-icon:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  min-width: 120px;
+  margin-top: 4px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: #374151;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.menu-item:hover {
+  background: #f3f4f6;
+}
+
+.menu-item:first-child {
+  border-radius: 8px 8px 0 0;
+}
+
+.menu-item:last-child {
+  border-radius: 0 0 8px 8px;
+}
+
+.menu-item:only-child {
+  border-radius: 8px;
+}
+
+/* Tools Section Styles */
+.tools-section {
+  margin-bottom: 12px;
+}
+
+.tools-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tools-list {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tool-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: 6px;
+}
+
+.tool-icon {
+  width: 16px;
+  height: 16px;
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.tool-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.tool-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.tool-status {
+  font-size: 10px;
+  font-weight: 500;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+.tool-status.ready {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.tool-status.warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.tool-item.warning {
+  border-color: #f59e0b;
+  background: #fef3c7;
+}
+
+.tool-item.warning:hover {
+  border-color: #d97706;
+  background: #fde68a;
+}
+
+.tool-item:hover {
+  border-color: #3b82f6;
+  background: #eff6ff;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tool-item:active {
+  transform: translateY(0);
+}
+
+.tool-item.selected {
+  border-color: #8b5cf6;
+  background: #f3f4f6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+.tool-name {
+  flex: 1;
+  font-size: 12px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.tool-menu {
+  width: 14px;
+  height: 14px;
+  color: #9ca3af;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Drop Zone Styles */
+.drop-zone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  border: 2px dashed #3b82f6;
+  border-radius: 6px;
+  background: rgba(59, 130, 246, 0.05);
+  font-size: 12px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.drop-zone:hover {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: #2563eb;
+}
+
+.drop-zone.drag-over {
+  background: rgba(59, 130, 246, 0.2);
+  border-color: #2563eb;
+  border-style: solid;
+  transform: scale(1.02);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+.drop-zone.success {
+  background: rgba(34, 197, 94, 0.2);
+  border-color: #22c55e;
+  color: #166534;
+  animation: successPulse 0.5s ease-in-out;
+}
+
+@keyframes successPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.drop-icon {
+  width: 16px;
+  height: 16px;
+  color: #3b82f6;
+}
+
+.add-tool-link {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.add-tool-link:hover {
+  text-decoration: underline;
+}
+
+/* Handle Styles */
+.react-flow__handle {
+  width: 8px;
+  height: 8px;
+  background: #3b82f6;
+  border: 2px solid white;
+  border-radius: 50%;
+}
+
+.react-flow__handle:hover {
+  background: #2563eb;
+}
+
+/* Edge Styles */
+.react-flow__edge-path {
+  stroke: #9ca3af;
+  stroke-width: 2;
+}
+
+.react-flow__edge-arrow {
+  fill: #9ca3af;
+}
+
+/* Selected Node Styles */
+.react-flow__node.selected {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+.react-flow__node.selected .agent-node,
+.react-flow__node.selected .master-agent-node {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+}
+
+/* Node Selection Handles */
+.react-flow__node.selected .react-flow__handle {
+  background: #8b5cf6;
+}
