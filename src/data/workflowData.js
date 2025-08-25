@@ -8,14 +8,16 @@ const StartEndNode = ({ data }) => (
     <Handle type="source" position={Position.Bottom} id="source" />
     <Handle type="target" position={Position.Top} id="target" />
     {data.label}
+
   </div>
 );
 
 // Custom Agent Node Component
-const AgentNode = ({ data, id, addToolToAgent, onToolSelect, selectedToolId }) => {
+const AgentNode = ({ data, id, addToolToAgent, onToolSelect, selectedToolId, deleteTool, openAddTools }) => {
   const [toolsExpanded, setToolsExpanded] = React.useState(true);
   const [showSuccess, setShowSuccess] = React.useState(false);
   const [showMenu, setShowMenu] = React.useState(false);
+  const [toolMenuStates, setToolMenuStates] = React.useState({});
   
   // Close menu when clicking outside
   React.useEffect(() => {
@@ -23,15 +25,18 @@ const AgentNode = ({ data, id, addToolToAgent, onToolSelect, selectedToolId }) =
       if (showMenu) {
         setShowMenu(false);
       }
+      if (Object.keys(toolMenuStates).some(key => toolMenuStates[key])) {
+        closeAllToolMenus();
+      }
     };
 
-    if (showMenu) {
+    if (showMenu || Object.keys(toolMenuStates).some(key => toolMenuStates[key])) {
       document.addEventListener('click', handleClickOutside);
       return () => {
         document.removeEventListener('click', handleClickOutside);
       };
     }
-  }, [showMenu]);
+  }, [showMenu, toolMenuStates]);
   
   const onDragOver = (event) => {
     event.preventDefault();
@@ -84,6 +89,25 @@ const AgentNode = ({ data, id, addToolToAgent, onToolSelect, selectedToolId }) =
     console.log('Test agent:', id);
     setShowMenu(false);
     // TODO: Implement test functionality
+  };
+
+  const handleDeleteTool = (event, toolId) => {
+    event.stopPropagation();
+    if (deleteTool) {
+      deleteTool(toolId);
+    }
+  };
+
+  const handleToolMenuClick = (event, toolId) => {
+    event.stopPropagation();
+    setToolMenuStates(prev => ({
+      ...prev,
+      [toolId]: !prev[toolId]
+    }));
+  };
+
+  const closeAllToolMenus = () => {
+    setToolMenuStates({});
   };
 
   const getToolStatus = (tool) => {
@@ -172,13 +196,22 @@ const AgentNode = ({ data, id, addToolToAgent, onToolSelect, selectedToolId }) =
                       </span>
                     </div>
                     <div className="tool-name">{tool.name}</div>
-                    <MoreVertical 
-                      className="tool-menu" 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleToolClick(tool);
-                      }}
-                    />
+                    <div className="tool-actions">
+                      <div className="tool-menu-container">
+                        <MoreVertical 
+                          className="tool-menu" 
+                          onClick={(e) => handleToolMenuClick(e, tool.id)}
+                        />
+                        {toolMenuStates[tool.id] && (
+                          <div className="tool-dropdown-menu">
+                            <div className="menu-item" onClick={(e) => handleDeleteTool(e, tool.id)}>
+                              <Trash2 size={14} />
+                              <span>Delete</span>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 );
               })}
@@ -192,10 +225,21 @@ const AgentNode = ({ data, id, addToolToAgent, onToolSelect, selectedToolId }) =
         onDragOver={onDragOver}
         onDragLeave={onDragLeave}
         onDrop={onDrop}
+        style={{ cursor: 'default' }}
       >
         <Plus className="drop-icon" />
         <span>
-          {showSuccess ? 'Tool added successfully!' : 'Drop tool here or Add tool'}
+          {showSuccess ? 'Tool added successfully!' : (
+            <>
+              Drop tool here or <span 
+                className="add-tool-link"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (openAddTools) openAddTools(id);
+                }}
+              >Add tool</span>
+            </>
+          )}
         </span>
       </div>
 
@@ -404,6 +448,12 @@ export const createInitialEdges = () => [
     sourceHandle: 'source',
     targetHandle: 'target',
     type: 'smoothstep',
+    markerEnd: {
+      type: 'arrowclosed',
+      width: 20,
+      height: 20,
+      color: '#9ca3af',
+    },
   },
   {
     id: 'master-weather',
@@ -412,6 +462,12 @@ export const createInitialEdges = () => [
     sourceHandle: 'source',
     targetHandle: 'target',
     type: 'smoothstep',
+    markerEnd: {
+      type: 'arrowclosed',
+      width: 20,
+      height: 20,
+      color: '#9ca3af',
+    },
   },
   {
     id: 'master-chatbot',
@@ -420,6 +476,12 @@ export const createInitialEdges = () => [
     sourceHandle: 'source',
     targetHandle: 'target',
     type: 'smoothstep',
+    markerEnd: {
+      type: 'arrowclosed',
+      width: 20,
+      height: 20,
+      color: '#9ca3af',
+    },
   },
   {
     id: 'master-diagnostic',
@@ -428,30 +490,27 @@ export const createInitialEdges = () => [
     sourceHandle: 'source',
     targetHandle: 'target',
     type: 'smoothstep',
+    markerEnd: {
+      type: 'arrowclosed',
+      width: 20,
+      height: 20,
+      color: '#9ca3af',
+    },
   },
   {
-    id: 'weather-end',
-    source: 'weather-agent',
+    id: 'start-end-direct',
+    source: 'start',
     target: 'end',
     sourceHandle: 'source',
     targetHandle: 'target',
     type: 'smoothstep',
-  },
-  {
-    id: 'chatbot-end',
-    source: 'chatbot-agent',
-    target: 'end',
-    sourceHandle: 'source',
-    targetHandle: 'target',
-    type: 'smoothstep',
-  },
-  {
-    id: 'diagnostic-end',
-    source: 'diagnostic-agent',
-    target: 'end',
-    sourceHandle: 'source',
-    targetHandle: 'target',
-    type: 'smoothstep',
+    style: { strokeDasharray: '5,5' }, // Dashed line to distinguish from agent paths
+    markerEnd: {
+      type: 'arrowclosed',
+      width: 20,
+      height: 20,
+      color: '#6b7280',
+    },
   },
 ];
 

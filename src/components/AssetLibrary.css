@@ -6,6 +6,28 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  transition: width 0.3s ease;
+}
+
+.asset-library.collapsed {
+  width: 60px;
+}
+
+.asset-library.collapsed .asset-library-header {
+  padding: 20px 10px;
+  justify-content: center;
+}
+
+.asset-library.collapsed .header-main h2 {
+  display: none;
+}
+
+.asset-library.collapsed .header-actions {
+  justify-content: center;
+}
+
+.asset-library.collapsed .reset-workflow-btn {
+  display: none;
 }
 
 .asset-library-header {
@@ -14,6 +36,53 @@
   justify-content: space-between;
   padding: 20px;
   border-bottom: 1px solid #e5e7eb;
+}
+
+.header-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.workflow-type-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.type-label {
+  background: #3b82f6;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.reset-workflow-btn {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #d1d5db;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.reset-workflow-btn:hover {
+  background: #e5e7eb;
+  border-color: #9ca3af;
+  color: #111827;
 }
 
 .asset-library-header h2 {

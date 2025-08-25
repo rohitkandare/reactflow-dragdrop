@@ -282,6 +282,57 @@
   flex-shrink: 0;
 }
 
+.tool-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.tool-menu-container {
+  position: relative;
+}
+
+.tool-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  z-index: 1000;
+  min-width: 120px;
+  margin-top: 4px;
+}
+
+.tool-dropdown-menu .menu-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: #374151;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.tool-dropdown-menu .menu-item:hover {
+  background: #f3f4f6;
+}
+
+.tool-dropdown-menu .menu-item:first-child {
+  border-radius: 8px 8px 0 0;
+}
+
+.tool-dropdown-menu .menu-item:last-child {
+  border-radius: 0 0 8px 8px;
+}
+
+.tool-dropdown-menu .menu-item:only-child {
+  border-radius: 8px;
+}
+
 /* Drop Zone Styles */
 .drop-zone {
   display: flex;
@@ -332,12 +383,15 @@
 
 .add-tool-link {
   color: #3b82f6;
-  text-decoration: none;
+  text-decoration: underline;
+  cursor: pointer;
   font-weight: 500;
+  transition: color 0.2s;
 }
 
 .add-tool-link:hover {
-  text-decoration: underline;
+  color: #2563eb;
+  text-decoration: none;
 }
 
 /* Handle Styles */
@@ -361,6 +415,28 @@
 
 .react-flow__edge-arrow {
   fill: #9ca3af;
+}
+
+/* Custom edge styling for direct connections */
+.react-flow__edge.direct-connection .react-flow__edge-path {
+  stroke: #6b7280;
+  stroke-width: 2;
+  stroke-dasharray: 5,5;
+}
+
+.react-flow__edge.direct-connection .react-flow__edge-arrow {
+  fill: #6b7280;
+}
+
+/* Selected edge styling */
+.react-flow__edge.selected-edge .react-flow__edge-path {
+  stroke: #ef4444 !important;
+  stroke-width: 3 !important;
+  filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.5));
+}
+
+.react-flow__edge.selected-edge .react-flow__edge-arrow {
+  fill: #ef4444 !important;
 }
 
 /* Selected Node Styles */
