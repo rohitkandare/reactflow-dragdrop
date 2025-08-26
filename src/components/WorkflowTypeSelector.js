@@ -96,14 +96,23 @@ const WorkflowTypeSelector = ({ onWorkflowTypeSelect, onClose }) => {
           })}
         </div>
 
-        <div className="modal-footer">
-          <button className="cancel-button" onClick={onClose}>
+                <div className="flex justify-end gap-3 mt-6">
+          <button
+            className="px-4 py-2 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 transition"
+            onClick={onClose}
+            type="button"
+          >
             Cancel
           </button>
           <button
-            className={`start-button ${selectedType ? 'active' : 'disabled'}`}
+            className={`px-4 py-2 rounded flex items-center gap-2 font-semibold transition ${
+              selectedType
+                ? 'bg-blue-600 text-white hover:bg-blue-700 cursor-pointer'
+                : 'bg-gray-300 text-gray-400 cursor-not-allowed'
+            }`}
             onClick={handleStartWorkflow}
             disabled={!selectedType}
+            type="button"
           >
             <Play size={16} />
             Start Workflow

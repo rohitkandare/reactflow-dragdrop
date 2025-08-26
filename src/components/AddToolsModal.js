@@ -1,6 +1,5 @@
 import { Search } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
-import './AddToolsModal.css';
 
 const DEFAULT_TOOLS = [
   { id: 'billing-diagnostic', name: 'billing-diagnostic', description: 'Helps in organizing the data and clear actionable items depending...' },
@@ -39,43 +38,77 @@ const AddToolsModal = ({ isOpen, onClose, onAdd, preselected = [], tools = DEFAU
   };
 
   return (
-    <div className="addtools-overlay" onClick={onClose}>
-      <div className="addtools-modal" onClick={(e) => e.stopPropagation()}>
-        <div className="addtools-header">
+    <div
+      className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-[2000]"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-xl w-[900px] max-w-[95vw] max-h-[90vh] flex flex-col overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-5 py-4 bg-gray-900 text-white">
           <h3>Add Tools</h3>
-          <button className="close-btn" onClick={onClose}>×</button>
+          <button
+            className="bg-transparent border-none text-white text-xl cursor-pointer"
+            onClick={onClose}
+          >
+            ×
+          </button>
         </div>
 
-        <div className="search-row">
-          <div className="search-input">
+        <div className="px-5 py-4">
+          <div className="flex items-center gap-2 border border-gray-200 rounded-lg px-3 py-2">
             <Search size={16} />
             <input
               type="text"
               placeholder="Search Tool Name"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              className="border-none outline-none flex-1 bg-transparent"
             />
           </div>
         </div>
 
-        <div className="tools-grid">
+        <div className="px-5 pb-5 grid grid-cols-1 md:grid-cols-3 gap-3 overflow-auto">
           {filtered.map((tool) => {
             const active = selected.has(tool.id);
             return (
-              <div key={tool.id} className="tool-card" onClick={() => toggle(tool.id)}>
-                <div className="tool-title">{tool.name}</div>
-                <div className="tool-desc">{tool.description}</div>
-                <div className={`toggle ${active ? 'on' : ''}`}> 
-                  <div className="knob" />
+              <div
+                key={tool.id}
+                className="border border-gray-200 rounded-lg p-3 bg-white cursor-pointer"
+                onClick={() => toggle(tool.id)}
+              >
+                <div className="font-semibold mb-1.5">{tool.name}</div>
+                <div className="text-xs text-gray-500 h-8 overflow-hidden">{tool.description}</div>
+                <div
+                  className={`mt-2.5 w-11 h-6 rounded-full relative transition-colors duration-200 ${
+                    active ? 'bg-emerald-500' : 'bg-gray-300'
+                  }`}
+                >
+                  <div
+                    className={`absolute top-[3px] left-[3px] w-[18px] h-[18px] bg-white rounded-full transition-transform duration-200 ease-in-out ${
+                      active ? 'transform translate-x-5' : ''
+                    }`}
+                  />
                 </div>
               </div>
             );
           })}
         </div>
 
-        <div className="footer">
-          <button className="secondary" onClick={onClose}>Cancel</button>
-          <button className="primary" onClick={handleAdd}>Add to Agent</button>
+        <div className="flex justify-end gap-2.5 px-5 py-4 border-t border-gray-200">
+          <button
+            className="bg-gray-100 border border-gray-200 px-3.5 py-2 rounded-full cursor-pointer"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+          <button
+            className="bg-gray-900 text-white border-none px-3.5 py-2 rounded-full cursor-pointer"
+            onClick={handleAdd}
+          >
+            Add to Agent
+          </button>
         </div>
       </div>
     </div>
@@ -83,6 +116,3 @@ const AddToolsModal = ({ isOpen, onClose, onAdd, preselected = [], tools = DEFAU
 };
 
 export default AddToolsModal;
-
-
-

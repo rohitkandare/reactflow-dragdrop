@@ -1,6 +1,6 @@
 import { ChevronDown, ChevronUp, MoreVertical, Play, Plus, Trash2, User, Wrench } from 'lucide-react';
 import React from 'react';
-import { Handle, Position } from 'react-flow-renderer';
+import { Handle, Position } from '@xyflow/react';
 
 // Custom Start/End Node Component
 const StartEndNode = ({ data }) => (
@@ -13,7 +13,7 @@ const StartEndNode = ({ data }) => (
 );
 
 // Custom Agent Node Component
-const AgentNode = ({ data, id, addToolToAgent, onToolSelect, selectedToolId, deleteTool, openAddTools }) => {
+const AgentNode = ({ data, id, addToolToAgent, onToolSelect, selectedToolId, deleteTool,deleteAgent, openAddTools }) => {
   const [toolsExpanded, setToolsExpanded] = React.useState(true);
   const [showSuccess, setShowSuccess] = React.useState(false);
   const [showMenu, setShowMenu] = React.useState(false);
@@ -77,11 +77,14 @@ const AgentNode = ({ data, id, addToolToAgent, onToolSelect, selectedToolId, del
     setShowMenu(!showMenu);
   };
 
-  const handleDelete = (event) => {
+  const handleDelete = (event , id) => {
     event.stopPropagation();
     console.log('Delete agent:', id);
     setShowMenu(false);
     // TODO: Implement delete functionality
+    if (deleteAgent) {
+      deleteAgent(id);
+    }
   };
 
   const handleTest = (event) => {
@@ -148,7 +151,7 @@ const AgentNode = ({ data, id, addToolToAgent, onToolSelect, selectedToolId, del
           />
           {showMenu && (
             <div className="dropdown-menu">
-              <div className="menu-item" onClick={handleDelete}>
+              <div className="menu-item" onClick={(e)=>handleDelete(e, id)}>
                 <Trash2 size={14} />
                 <span>Delete</span>
               </div>

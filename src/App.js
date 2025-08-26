@@ -1,18 +1,19 @@
 import React, { Suspense, useCallback, useMemo, useState } from 'react';
-import ReactFlow, {
+import {
     addEdge,
     Background,
     Controls,
     useEdgesState,
-    useNodesState
-} from 'react-flow-renderer';
-import 'react-flow-renderer/dist/style.css';
+    useNodesState,
+    ReactFlow
+} from '@xyflow/react';
 import './App.css';
 import AddToolsModal from './components/AddToolsModal';
 import AgentConfiguration from './components/AgentConfiguration';
 import AssetLibrary from './components/AssetLibrary';
 import './components/NodeStyles.css';
 import ToolConfiguration from './components/ToolConfiguration';
+import '@xyflow/react/dist/style.css';
 
 import { createInitialEdges, createInitialNodes, nodeTypes } from './data/workflowData';
 
@@ -294,6 +295,12 @@ function App() {
     setSelectedTool(null);
   }, [setNodes]);
 
+  const deleteAgent = useCallback((agentId) => {
+  setNodes((nds) => nds.filter((node) => node.id !== agentId));
+  // Clear selected node if it was deleted
+  setSelectedNode((prevNode) => (prevNode && prevNode.id === agentId ? null : prevNode));
+}, [setNodes]);
+
   // Function to handle workflow type selection
   const handleWorkflowTypeSelect = useCallback((workflowType) => {
     setSelectedWorkflowType(workflowType);
@@ -535,6 +542,7 @@ function App() {
       onToolSelect,
       selectedToolId: selectedTool?.id,
       deleteTool,
+      deleteAgent,
       openAddTools
     })
   }), [addToolToAgent, onToolSelect, selectedTool?.id, deleteTool, openAddTools]);
@@ -565,7 +573,7 @@ function App() {
   }, [edges, selectedEdge]);
 
   return (
-    <div className="app">
+    <div  className="flex h-screen w-screen overflow-hidden">
       {showWorkflowSelector ? (
         <Suspense fallback={<div>Loading...</div>}>
           <LazyWorkflowTypeSelector
@@ -583,7 +591,7 @@ function App() {
             onResetWorkflow={handleResetWorkflow}
             selectedWorkflowType={selectedWorkflowType}
           />
-          <div className="workflow-canvas">
+          <div className="flex-1 h-screen bg-gray-100 relative">
             <ReactFlow
               nodes={nodes}
               edges={styledEdges}
