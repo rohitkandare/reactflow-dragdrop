@@ -43,24 +43,26 @@ function App() {
 
   useEffect(() => {
     const controller = new AbortController();
-    setToolsLoading(true);
-    fetchToolsFromApi(controller.signal, { query: searchQuery })
-      .then(({ tools, totalCount }) => {
-        setAvailableTools(tools);
-        setToolsTotalCount(totalCount);
-      })
-      .catch((e) => setToolsError(e.message || 'Failed to load tools'))
-      .finally(() => setToolsLoading(false));
-
-    fetchAgentsFromApi(controller.signal, { query: searchQuery })
-      .then(({ agents, totalCount }) => {
-        setAvailableAgents(agents);
-        setAgentsTotalCount(totalCount);
-      })
-      .catch(() => {})
-      .finally(() => {});
+    if (activeTab === 'tools') {
+      setToolsLoading(true);
+      fetchToolsFromApi(controller.signal, { query: searchQuery })
+        .then(({ tools, totalCount }) => {
+          setAvailableTools(tools);
+          setToolsTotalCount(totalCount);
+        })
+        .catch((e) => setToolsError(e.message || 'Failed to load tools'))
+        .finally(() => setToolsLoading(false));
+    } else {
+      fetchAgentsFromApi(controller.signal, { query: searchQuery })
+        .then(({ agents, totalCount }) => {
+          setAvailableAgents(agents);
+          setAgentsTotalCount(totalCount);
+        })
+        .catch(() => {})
+        .finally(() => {});
+    }
     return () => controller.abort();
-  }, [searchQuery]);
+  }, [searchQuery, activeTab]);
 
   // Simple auto layout for hierarchical workflows
   const layoutHierarchical = useCallback((nodesToLayout) => {
