@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback, useMemo, useState } from 'react';
+import React, { Suspense, useCallback, useMemo, useState, useEffect } from 'react';
 import {
     addEdge,
     Background,
@@ -16,6 +16,7 @@ import ToolConfiguration from './components/ToolConfiguration';
 import '@xyflow/react/dist/style.css';
 
 import { createInitialEdges, createInitialNodes, nodeTypes } from './data/workflowData';
+import { fetchToolsFromApi, fetchAgentsFromApi } from './data/api';
 
 // Lazy load components for better performance
 const LazyWorkflowTypeSelector = React.lazy(() => import('./components/WorkflowTypeSelector'));
@@ -33,6 +34,33 @@ function App() {
   const [rfInstance, setRfInstance] = useState(null);
   const [isAddToolsOpen, setIsAddToolsOpen] = useState(false);
   const [targetAgentId, setTargetAgentId] = useState(null);
+  const [availableTools, setAvailableTools] = useState([]);
+  const [toolsTotalCount, setToolsTotalCount] = useState(0);
+  const [availableAgents, setAvailableAgents] = useState([]);
+  const [agentsTotalCount, setAgentsTotalCount] = useState(0);
+  const [toolsLoading, setToolsLoading] = useState(false);
+  const [toolsError, setToolsError] = useState(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    setToolsLoading(true);
+    fetchToolsFromApi(controller.signal, { query: searchQuery })
+      .then(({ tools, totalCount }) => {
+        setAvailableTools(tools);
+        setToolsTotalCount(totalCount);
+      })
+      .catch((e) => setToolsError(e.message || 'Failed to load tools'))
+      .finally(() => setToolsLoading(false));
+
+    fetchAgentsFromApi(controller.signal, { query: searchQuery })
+      .then(({ agents, totalCount }) => {
+        setAvailableAgents(agents);
+        setAgentsTotalCount(totalCount);
+      })
+      .catch(() => {})
+      .finally(() => {});
+    return () => controller.abort();
+  }, [searchQuery]);
 
   // Simple auto layout for hierarchical workflows
   const layoutHierarchical = useCallback((nodesToLayout) => {
@@ -193,7 +221,9 @@ function App() {
         id: `${t.id}-${Date.now()}-${Math.floor(Math.random()*1000)}`,
         name: t.name,
         description: t.description,
-        variables: []
+        variables: Array.isArray(t.env_config_params) && t.env_config_params.length > 0
+          ? t.env_config_params.map(p => ({ name: p.name, type: p.type || 'Confidential', value: '' }))
+          : []
       }));
       return {
         ...node,
@@ -590,6 +620,10 @@ function App() {
             setSearchQuery={setSearchQuery}
             onResetWorkflow={handleResetWorkflow}
             selectedWorkflowType={selectedWorkflowType}
+            tools={availableTools}
+            totalToolsCount={toolsTotalCount}
+            agents={availableAgents}
+            totalAgentsCount={agentsTotalCount}
           />
           <div className="flex-1 h-screen bg-gray-100 relative">
             <ReactFlow
@@ -626,6 +660,8 @@ function App() {
             isOpen={isAddToolsOpen}
             onClose={() => setIsAddToolsOpen(false)}
             onAdd={handleAddTools}
+            tools={availableTools}
+            totalToolsCount={toolsTotalCount}
           />
           {selectedTool ? (
             <ToolConfiguration 

@@ -1,5 +1,5 @@
 import { Search } from 'lucide-react';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
 const DEFAULT_TOOLS = [
   { id: 'billing-diagnostic', name: 'billing-diagnostic', description: 'Helps in organizing the data and clear actionable items depending...' },
@@ -11,15 +11,24 @@ const DEFAULT_TOOLS = [
   { id: 'composer-metrics', name: 'composer-metrics', description: 'Reflects the current state of the ticket, such as open, in progress, or resolved.' },
 ];
 
-const AddToolsModal = ({ isOpen, onClose, onAdd, preselected = [], tools = DEFAULT_TOOLS }) => {
+const AddToolsModal = ({ isOpen, onClose, onAdd, preselected = [], tools = DEFAULT_TOOLS, totalToolsCount = 0 }) => {
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState(() => new Set(preselected));
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 12;
 
   const filtered = useMemo(() => {
     if (!query) return tools;
     const q = query.toLowerCase();
     return tools.filter(t => t.name.toLowerCase().includes(q));
   }, [query, tools]);
+
+  useEffect(() => { setPage(1); }, [query, tools.length]);
+
+  const totalPages = Math.max(1, Math.ceil((totalToolsCount || filtered.length) / PAGE_SIZE));
+  const start = (page - 1) * PAGE_SIZE;
+  const end = start + PAGE_SIZE;
+  const paged = filtered.slice(start, end);
 
   if (!isOpen) return null;
 
@@ -70,7 +79,7 @@ const AddToolsModal = ({ isOpen, onClose, onAdd, preselected = [], tools = DEFAU
         </div>
 
         <div className="px-5 pb-5 grid grid-cols-1 md:grid-cols-3 gap-3 overflow-auto">
-          {filtered.map((tool) => {
+          {paged.map((tool) => {
             const active = selected.has(tool.id);
             return (
               <div
@@ -94,6 +103,23 @@ const AddToolsModal = ({ isOpen, onClose, onAdd, preselected = [], tools = DEFAU
               </div>
             );
           })}
+        </div>
+
+        <div className="px-5 pb-2 flex items-center justify-between">
+          <span className="text-xs text-gray-500">{`${start + 1}-${Math.min(end, totalToolsCount || filtered.length)} of ${totalToolsCount || filtered.length}`}</span>
+          <div className="flex items-center gap-2">
+            <button
+              className="px-2 py-1 text-xs border border-gray-300 rounded disabled:opacity-50"
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={page === 1}
+            >Prev</button>
+            <span className="text-xs text-gray-600">Page {page} / {totalPages}</span>
+            <button
+              className="px-2 py-1 text-xs border border-gray-300 rounded disabled:opacity-50"
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+            >Next</button>
+          </div>
         </div>
 
         <div className="flex justify-end gap-2.5 px-5 py-4 border-t border-gray-200">

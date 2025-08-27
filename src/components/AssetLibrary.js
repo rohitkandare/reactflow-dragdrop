@@ -6,35 +6,52 @@ import {
   User,
   Wrench
 } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 
-const AssetLibrary = ({ activeTab, setActiveTab, searchQuery, setSearchQuery, onResetWorkflow, selectedWorkflowType }) => {
+const AssetLibrary = ({ activeTab, setActiveTab, searchQuery, setSearchQuery, onResetWorkflow, selectedWorkflowType, tools: toolsProp, totalToolsCount = 0, agents: agentsProp = [], totalAgentsCount = 0 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const agents = [
-    { id: 1, name: "Customer Infobot", description: "Helps answering customer query about anything..", icon: "🤖" },
-    { id: 2, name: "Promotion Copy Writer", description: "Helps in creating promotional content and copy..", icon: "✍️" },
-    { id: 3, name: "Device offer Analysis", description: "Analyzes device offers and provides insights..", icon: "📊" },
-    { id: 4, name: "ACSS Support Chatbot", description: "Provides automated customer support..", icon: "💬" },
-    { id: 5, name: "Customer Data Retrival", description: "Retrieves and manages customer data..", icon: "📋" }
-  ];
+  const agents = useMemo(() => (agentsProp && agentsProp.length ? agentsProp : []).map(a => ({
+    id: a.id,
+    name: a.name,
+    description: a.description,
+    icon: "🤖"
+  })), [agentsProp]);
 
-  const tools = [
-    { id: 1, name: "bulk-doc-check", description: "Helps in organizing the data and clear actionable items depending...", icon: "🔧" },
-    { id: 2, name: "data-analytics-tool", description: "Helps in organizing the data and clear actionable items depending...", icon: "📈" },
-    { id: 3, name: "web-search-tool", description: "Helps in organizing the data and clear actionable items depending...", icon: "🌐" },
-    { id: 4, name: "ticket-classification", description: "Helps in organizing the data and clear actionable items depending...", icon: "🎫" },
-    { id: 5, name: "fetch-search-results", description: "Helps in organizing the data and clear actionable items depending...", icon: "🔍" },
-    { id: 6, name: "gcs-connect-search", description: "Helps in organizing the data and clear actionable items depending...", icon: "☁️" },
-    { id: 7, name: "composer-metrics", description: "Helps in organizing the data and clear actionable items depending...", icon: "📊" }
-  ];
+  const tools = useMemo(() => (toolsProp && toolsProp.length ? toolsProp : []).map(t => ({
+    id: t.id,
+    name: t.name,
+    description: t.description,
+    icon: "🔧"
+  })), [toolsProp]);
+
+  // Pagination state for tools
+  const [toolPage, setToolPage] = useState(1);
+  const TOOL_PAGE_SIZE = 12;
 
   const filteredAgents = agents.filter(agent =>
     agent.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  const AGENT_PAGE_SIZE = 12;
+  const [agentPage, setAgentPage] = useState(1);
+  useEffect(() => { setAgentPage(1); }, [searchQuery, agents.length]);
+  const totalAgentPages = Math.max(1, Math.ceil((totalAgentsCount || filteredAgents.length) / AGENT_PAGE_SIZE));
+  const agentPageStart = (agentPage - 1) * AGENT_PAGE_SIZE;
+  const agentPageEnd = agentPageStart + AGENT_PAGE_SIZE;
+  const pagedAgents = filteredAgents.slice(agentPageStart, agentPageEnd);
 
   const filteredTools = tools.filter(tool =>
     tool.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Reset pagination when search or incoming tools change
+  useEffect(() => {
+    setToolPage(1);
+  }, [searchQuery, tools.length]);
+
+  const totalToolPages = Math.max(1, Math.ceil((totalToolsCount || filteredTools.length) / TOOL_PAGE_SIZE));
+  const toolPageStart = (toolPage - 1) * TOOL_PAGE_SIZE;
+  const toolPageEnd = toolPageStart + TOOL_PAGE_SIZE;
+  const pagedTools = filteredTools.slice(toolPageStart, toolPageEnd);
 
   const onDragStart = (event, nodeType, name, description) => {
     event.dataTransfer.setData('application/reactflow', nodeType);
@@ -146,7 +163,8 @@ const AssetLibrary = ({ activeTab, setActiveTab, searchQuery, setSearchQuery, on
             </div>
             <div className="flex-1 overflow-y-auto flex flex-col gap-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
               {activeTab === 'agents' ? (
-                filteredAgents.map(agent => (
+                <>
+                {pagedAgents.map(agent => (
                   <div
                     key={agent.id}
                     className="flex items-start px-3 py-3 border border-gray-200 rounded-lg bg-white cursor-pointer transition-all duration-200 gap-3 hover:border-blue-400 hover:shadow active:cursor-grabbing active:scale-98"
@@ -162,9 +180,29 @@ const AssetLibrary = ({ activeTab, setActiveTab, searchQuery, setSearchQuery, on
                     </div>
                     <Grid className="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mt-0.5" />
                   </div>
-                ))
+                ))}
+                {(totalAgentsCount || filteredAgents.length) > 0 && (
+                  <div className="flex items-center justify-between mt-3">
+                    <span className="text-xs text-gray-500">{`${agentPageStart + 1}-${Math.min(agentPageEnd, totalAgentsCount || filteredAgents.length)} of ${totalAgentsCount || filteredAgents.length}`}</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        className="px-2 py-1 text-xs border border-gray-300 rounded disabled:opacity-50"
+                        onClick={() => setAgentPage((p) => Math.max(1, p - 1))}
+                        disabled={agentPage === 1}
+                      >Prev</button>
+                      <span className="text-xs text-gray-600">Page {agentPage} / {totalAgentPages}</span>
+                      <button
+                        className="px-2 py-1 text-xs border border-gray-300 rounded disabled:opacity-50"
+                        onClick={() => setAgentPage((p) => Math.min(totalAgentPages, p + 1))}
+                        disabled={agentPage === totalAgentPages}
+                      >Next</button>
+                    </div>
+                  </div>
+                )}
+                </>
               ) : (
-                filteredTools.map(tool => (
+                <>
+                {pagedTools.map(tool => (
                   <div
                     key={tool.id}
                     className="flex items-start px-3 py-3 border border-yellow-500 rounded-lg bg-yellow-100 cursor-pointer transition-all duration-200 gap-3 hover:border-yellow-400 hover:shadow active:cursor-grabbing active:scale-98"
@@ -180,7 +218,26 @@ const AssetLibrary = ({ activeTab, setActiveTab, searchQuery, setSearchQuery, on
                     </div>
                     <Grid className="w-3.5 h-3.5 text-gray-400 flex-shrink-0 mt-0.5" />
                   </div>
-                ))
+                ))}
+                {(totalToolsCount || filteredTools.length) > 0 && (
+                  <div className="flex items-center justify-between mt-3">
+                    <span className="text-xs text-gray-500">{`${toolPageStart + 1}-${Math.min(toolPageEnd, totalToolsCount || filteredTools.length)} of ${totalToolsCount || filteredTools.length}`}</span>
+                    <div className="flex items-center gap-2">
+                      <button
+                        className="px-2 py-1 text-xs border border-gray-300 rounded disabled:opacity-50"
+                        onClick={() => setToolPage((p) => Math.max(1, p - 1))}
+                        disabled={toolPage === 1}
+                      >Prev</button>
+                      <span className="text-xs text-gray-600">Page {toolPage} / {totalToolPages}</span>
+                      <button
+                        className="px-2 py-1 text-xs border border-gray-300 rounded disabled:opacity-50"
+                        onClick={() => setToolPage((p) => Math.min(totalToolPages, p + 1))}
+                        disabled={toolPage === totalToolPages}
+                      >Next</button>
+                    </div>
+                  </div>
+                )}
+                </>
               )}
             </div>
           </div>
